@@ -1,0 +1,10 @@
+void lcl_write_motif ( FILE *fptr, s_motif *motif ) ;
+void write_motifs ( FILE *fptr, s_motif **motifs, int num_motifs ) ;
+void write_and_release_motifs( char *output_file, int file_num, s_motif **motifs, int num_motifs ) ;
+void lcl_read_motif ( FILE *fptr, s_motif *motif ) ;
+int read_motifs ( FILE *fptr, s_motif ***motifs ) ;
+s_motif* copy_motif (s_motif *m1) ;
+char* print_motif_to_char(s_motif *motif) ;
+void print_motif(s_motif *motif) ;
+char* print_motif_to_seq(s_motif *motif) ;
+void print_cfg(s_motif *motif) ;
