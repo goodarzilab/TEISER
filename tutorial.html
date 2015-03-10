@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>TEISER tutorial</title>
+<link rel="stylesheet" type="text/css" href="screen.css" media="screen" /> 
+  </head>
+
+  <body>
+
+
+<div id="page">
+
+ <div id="main" class="normal">
+
+
+   
+<h2 class="index">Installing and using TEISER: a basic tutorial</h2>
+
+   <h4 class="index">Installation</h4>
+
+   <p>Download the code (e.g, TEISERvx.x.zip) to your machine. If you want, you can use wget to get the code:	</p>
+	<p><code>wget TEISER/TEISERvx.x.zip</code></p>
+	<p>Unzip the .zip file using unzip (files will be unzipped in a TEISERvx.x/ directory)</p>
+	<p><code>unzip TEISERvx.x.zip</code></p>
+	<p>Then, go to TEISERvx.x/ and run "make":</p>
+   	<p><code>cd TEISERvx.x <br /> make</code></p>
+   	
+    
+    <h4 class="index">Initializing the structural seeds</h4>
+    <p>TEISER starts by evaluating a predefined set of structural motifs which we call seeds. The significant seeds are then further optimizied and elongated into more informative motifs. You can initialize the seed space as you see fit but we used the following criteria:</p>
+
+    <ul>
+    <li>stem length: from 4bp to 7bp.</li>
+    <li>loop length" from 4nt to 9nt.</li>
+    <li>Number of informative bases: 4nt to 6nt.</li>
+    <li>Information of the motif: 14-20.</li>
+    </ul>
+    
+    <p>To create this set, you should run the following command ($TEISERDIR is the TEISER home directory where teiser.pl is located):</p>
+    <p><code>$TEISERDIR/Programs/seed_creator -min_stem_length INT -max_stem_length INT -min_loop_length INT -max_loop_length INT -min_inf_seq INT -max_inf_seq INT -max_inf FLOAT -min_inf FLOAT -outfile FILE</code>
+    </p>
+    <p>This program creates the seeds that satisfies the set constraints and packages them into seperate files, each containing 250,000 independent seeds. We recommend using the seeds folder in the TEISER_Data directory to deposit the seed files. For example, for the above parameters, set the 'outfile' parameter to "$TEISERDIR/TEISER_Data/seeds/seeds.4-7.4-9.4-6.14". There is a file called "seedfiles.txt" in this folder which must contain all the generated files (with paths reported relative to TEISER home directory); if not, modify this file as needed. For each species, in the <code>species_data</code> folder, this file is set as a parameter, which enables TEISER to locate all the necessary seeds.</p>
+    
+    <h3 class="index">Using TEISER</h3>
+    <p>The current implementation of TEISER is meant to be executed from the same directory where all the scripts reside (in the TEISERvx.x/ directory if you've followed the instructions above). If you want to run TEISER from another directory, you should define TEISERDIR variable:</p>
+	<p><code>export TEISERDIR=/path/to/TEISER/</code></p>
+    <p>If you don't set the TEISERDIR variable, TEISER assumes the current path as the TEISER home directory.</p>
+	<p>The basic command line syntax for TEISER is :</p>
+	<p><code>perl teiser_parallel.pl --expfile=&lt;inp&gt; --species=&lt;sp&gt; --exptype=&lt;type&gt; --ebins=&lt;int&gt; --submit=&lt;0/1&gt;</code></p>
+	<p>where &lt;inp&gt; indicates the input genome profile, &lt;sp&gt; indicates the species, &lt;type&gt; indicates the number of bins used for the quantization of the genome profile and &lt;type&gt; indicates whether the genome profile is discrete (e.g., cluster indices) or continuous (e.g., expression values obtained from a single microarray experiment). If you set "--submit=1", TEISER will submit the required job to the available nodes. Using the parameters above, 274 seedfiles will be generated. Each file will be submitted twice: once for searching the upstream sequences and once for downstream sequences. If the submit options does not run successfully (i.e. there are no job ids reported), modify Scripts/PBS.pm according to the settings of your platform.</p>
+	
+	<p>TEISER creates an "expfile_META/" where the results are saved. In this directory, the results for each seed package are saved. The combined results are in turn saved into "expfile_TEISER/". The results themselves are grouped into "DN" (downstream), "UP" (upstream) and "UP_DN" (both). The output files include:<br></p>
+
+  <table frame="void" cellpadding="2" cellspacing="0" align="center">
+		<tr>
+	     <td style="border:1px #000 solid"><code>expfile.summary.pdf(eps)</code></td>
+         <td style="border:1px #000 solid"><em>p</em>-value heatmap combining significant categories (main figure)</td>
+         </tr>
+		<tr>
+         <td style="border:1px #000 solid"><code>expfile.mimatrix.pdf(eps)</code></td> 
+         <td style="border:1px #000 solid"><em>p</em>-value heatmap showing motif-motif interactions.</td>
+	    </tr>
+		<tr>
+         <td style="border:1px #000 solid"><code>expfile.page.pdf(eps)</code></td> 
+         <td style="border:1px #000 solid"><em>p</em>-value heatmap showing pathways likely targeted by each element.</td>
+	    </tr>
+		<tr>
+	     <td  style="border:1px #000 solid"><code>expfile.motifs.pdf(eps)</code></td> 
+         <td  style="border:1px #000 solid">Contains the identified motifs along with their structure.</td>
+	    </tr>
+    </table>
+<p>
+We strongly recommend that you calculate false-discovery rates for each dataset that you use. For this, you can randomly shuffle the values assigned to each gene in your dataset and re-run TEISER. If you do find structural motifs deemed significant in this step, choose a threshold in z-score, robustness or a combination of both that will result in an acceptable FDR when applied to results from both the real input data and the shuffled one (e.g. <10%).
+</p>
+<h3 class="index">How do I analyze custom genomes?</h3>
+    <p>Go to: <code>TEISER_Data/species_data/</code>folder and open "human" file as an example. Basically, you need these files to start the program and the rest are optional:</p>
+    <ul>
+    <li>upstream sequences: <em>e.g.</em> human_5utr_1000.fa</li>
+    <li>downstream sequences: <em>e.g.</em> human_5utr_1000.fa</li>
+    <li>homology files: <em>e.g.</em> human_5utr_1000.fa.homologies (see <a href="/FIRE/tutorial.html">FIRE's tutorial for creating these files.</a>)</li>
+    <li>pathway annotations: <em>e.g.</em> human_go_index.txt and human_go_names.txt</li>
+    <li>alternative sequences for conservation score: <em>e.g.</em> mouse_5utr_1000.fa, mouse_3utr_1000.fa and human_mouse_orthologs.txt</li>
+    </ul>
+	<p>Put these files in a folder with your species' name and create a file with the same name in "species_data" folder. In this file, you should set the following parameters using the pathnames for the files you have created:</p>
+    <ul>
+    <li>fastafile_up</li>
+    <li>fastafile_dn</li>
+    <li>goindexfile</li>
+    <li>gonamesfile</li>
+    <li>seedfiles</li>
+    <li>fastafile_ort_up</li>
+    <li>fastafile_ort_dn</li>
+    <li>homologyfile</li>
+    </ul>
+ </div>
+</div>
+
+
+</body>
+</html>
