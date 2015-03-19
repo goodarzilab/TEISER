@@ -274,7 +274,7 @@ int main(int argc, char ** argv) {
       int hits ;
       M_q = get_motif_profile (motifs[seed_array[i].index], sequences, t_seq_count, h_rna_ind, &hits, dG_t) ;
       double pass = evalSeed(M_q, seq_count, seed_array[i].score, mbins, E_q, ebins, shuffle) ;
-      z = teiser_z_score_test( seed_array[idx_eval].score, M_q, mbins, E_q, ebins, seq_count, shuffle) ;
+      z = teiser_z_score_test( seed_array[i].score, M_q, mbins, E_q, ebins, seq_count, shuffle) ;
       free(M_q) ;
       if (pass<max_p && z>max_z)
 	check=1 ;
