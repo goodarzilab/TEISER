@@ -104,8 +104,7 @@ int main(int argc, char ** argv) {
       free(inst) ;
     }
   }
-  fclose(fptr) ;
-
+ 
   fclose(f) ;
   return (0) ;
 }

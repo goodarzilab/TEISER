@@ -12,7 +12,7 @@ BEGIN{
     }
 }
 
-my $cmdline = "perl teiser.pl";
+my $cmdline = "perl run_mi_gene_list.pl";
 foreach my $r (@ARGV) {
   $cmdline .= " $r";
 }
@@ -30,7 +30,7 @@ use Getopt::Long;
 use Data::Dumper;
 
 if (@ARGV == 0) {
-  die "Usage: perl teiser.pl --expfile=FILE --exptype=TXT --species=SP\n";
+  die "Usage: perl run_mi_gene_list.pl --expfile=FILE --exptype=TXT --species=SP\n";
 }
 
 my @argv_copy = @ARGV;
