@@ -7,6 +7,7 @@ use strict;
 use Fasta;
 use strict;
 use Getopt::Long ;
+use Data::Dumper; 
 
 my $fastafile       = undef ;
 my $expfile         = undef ;
