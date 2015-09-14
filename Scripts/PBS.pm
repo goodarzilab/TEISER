@@ -44,7 +44,7 @@ sub new {
     my ($self) = {};
 
     $self->{SCRIPT_NAME} = 'script.pbs';
-    $self->{WALLTIME}    = '72:00:00';
+    $self->{WALLTIME}    = '168:00:00';
     $self->{MEMORY}      = '4000M' ;
     $self->{QUEUE}       = undef;
     $self->{ERRORS}      = undef;
