@@ -59,7 +59,7 @@ int main(int argc, char ** argv) {
     }
 
     char fn [10000];
-    sprintf( fn, "%s.sRSM1.%3.3i.bin", outfile, i);
+    sprintf( fn, "%s.split.%3.3i.bin", outfile, i);
     FILE *fmotif ;
     fmotif = fopen(fn, "wb") ;
     if (!fmotif)
