@@ -22,7 +22,7 @@ PBS
 
    # now just add commands (that you would normally exexute manually)
    $pbs->addCmd("cd $pwd");
-   $pbs->addCmd("export DYLD_LIBRARY_PATH=/Genomics/fafner/grid/users/elemento/usr/lib");
+   $pbs->addCmd("export DYLD_LIBRARY_PATH=/Genomics/c2b2/grid/users/elemento/usr/lib");
    $pbs->addCmd("echo \"DNA, remove duplicates, create $expfile_nodups_dna\"");
 
    # submit the script
@@ -50,7 +50,7 @@ sub new {
     $self->{ERRORS}      = undef;
     $self->{DEPJOBS}     = [];
     $self->{CMDS}        = [];
-    $self->{PLATFORM}    = 'c2b2';
+    $self->{PLATFORM}    = 'qb3';
     $self->{USEALLNODE}  = 0;
     bless $self;
     return $self;
@@ -135,13 +135,17 @@ sub _createText {
   my ($self) = @_;
 
   my $txt = "";
-  $txt .= "#\$ -l mem=$self->{MEMORY}\n";
-  $txt .= "#\$ -l time=$self->{WALLTIME}\n";
+  $txt .= "#\$ -l mem_free=$self->{MEMORY}\n";
+  $txt .= "#\$ -l h_rt=$self->{WALLTIME}\n";
 
 
   $txt .= "#\$ -e $self->{SCRIPT_NAME}.e\n";
   $txt .= "#\$ -o $self->{SCRIPT_NAME}.o\n";
-  
+
+  $txt .= "#\$ -cwd\n";
+
+  $txt .= "#\$ -V\n";
+
   #if (defined($self->{ERRORS})) {
   #}
  
@@ -178,12 +182,12 @@ sub submit {
 
   $self->_writeScript();
 
-  #if ($self->{PLATFORM} eq 'fafner') {
+  #if ($self->{PLATFORM} eq 'c2b2') {
   system("chmod +x $self->{SCRIPT_NAME}");    
   #}
 
   my $todo = "qsub " ;
-  if (($self->{PLATFORM} eq 'fafner') || ($self->{PLATFORM} eq 'tcluster'))  {
+  if (($self->{PLATFORM} eq 'c2b2') || ($self->{PLATFORM} eq 'qb3'))  {
     $todo .= " -cwd ";
   }
 
@@ -198,7 +202,7 @@ sub submit {
   # doc at  http://beige.ucs.indiana.edu/I590/node45.html
   #         http://www.arsc.edu/support/news/HPCnews/HPCnews320.shtml
   if (@{$self->{DEPJOBS}} > 0) {
-    if ($self->{PLATFORM} eq 'c2b2') {
+    if ($self->{PLATFORM} eq 'qb3') {
 	$todo .= " -hold_jid " . join(",", @{$self->{DEPJOBS}}) ;
     } else {
 	$todo .= " -W depend=afterany:" . join(":", @{$self->{DEPJOBS}});
@@ -212,7 +216,7 @@ sub submit {
   my $out = `$todo`;
   $out =~ s/[\r\n]//g;
 
-  if ($self->{PLATFORM} eq 'c2b2') {
+  if ($self->{PLATFORM} eq 'qb3' || $self->{PLATFORM} eq 'c2b2') {
     my ($realout) = $out =~ /Your\ job\ (\d+?)\ /;  
     $out = $realout;
   }
