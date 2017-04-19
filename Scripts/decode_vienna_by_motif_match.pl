@@ -15,11 +15,11 @@ while (my $l=<I>){
 	my $n = $l ;
 	my @a = split(/_/, $l) ;
 	#my $ref = $a[0]."_".$a[1]."_".$a[2]."_".$a[3] ;
-	my $ref = $a[0]."_".$a[1] ;
 	#my $ref = $a[0]."_".$a[1] ;
-	#my $ref = $a[0] ;
-	my $mseq = $a[2] ;
-	my $mss = $a[3] ;
+	#my $ref = $a[0]."_".$a[1] ;
+	my $ref = $a[0] ;
+	my $mseq = $a[1] ;
+	my $mss = $a[2] ;
 
 	my $lcnt=0 ;
 	for (my $i=0 ; $i<length($mss) ; $i++){
